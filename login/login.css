@@ -1,0 +1,33 @@
+/* .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.5; Adjust this value to change the opacity of the overlay */
+    /* z-index: 9999;
+    animation: fadein 2s;
+} */
+
+/* @keyframes fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 0.5; Adjust this value to change the final opacity of the overlay */
+    /* }
+} */
+
+html, body {
+    height: 100%;
+}
+
+body {
+    background: linear-gradient(to bottom right, #c22ed0, #5ffae0);
+}
+
+header {
+	margin: 0 auto;
+	text-align: center;
+}
