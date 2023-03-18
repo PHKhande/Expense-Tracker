@@ -1,4 +1,5 @@
 document.getElementById("buttonSubmit").addEventListener("click", validateForm);
+const form = document.querySelector('form');
 
 function validateForm(e) {
     var name = document.getElementById("nameId").value;
@@ -22,6 +23,7 @@ function validateForm(e) {
 
     else{
         signupFunc(e);
+        form.reset();
     }
 }
 
@@ -37,15 +39,14 @@ async function signupFunc(e){
             email,
             password
         }
-        // const newUser = await axios.post('http://localhost:3000/signup/user', obj);
+        const newUser = await axios.post('http://localhost:3000/signup/user', obj);
         window.location.href = "../login/login.html";
-        console.log(obj);
         // console.log(newUser.data.newUserData);
         
     }
     catch (err) {
         console.log(err);
         document.body.innerHTML += `<h4> Something went wrong </h4>`
-        document.body.innerHTML += `<h4> ${err.response.data.error}</h4>`
+        document.body.innerHTML += `<h4> ${err.response.data.message}</h4>`
     }
 }

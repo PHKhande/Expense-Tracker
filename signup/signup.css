@@ -25,8 +25,6 @@ html, body {
 
 body {
     background: linear-gradient(to bottom right, #c22ed0, #5ffae0);
-    /* background-color: #e0e5ec;
-    box-shadow: 20px 20px 60px #bec5d4, -20px -20px 60px #ffffff; */
 }
 
 header {
@@ -38,11 +36,6 @@ header {
     background-color: white;
     color: #c22ed0;
     border-color: #c22ed0;
-
-    /* background-color: #c22ed0;
-    border-color: #5ffae0;
-    color: white; */
-     /* Set the button text color to white */
     width: 30%; /* Set the button width to 30% */
     display: block; /* Center the button horizontally */
     margin: 0 auto; /* Center the button horizontally */
@@ -50,10 +43,6 @@ header {
 }
 
 #buttonSubmit:hover{
-    /* background-color: white;
-    color: #c22ed0;
-    border-color: #a6a6a6; */
-
     background-color: #c22ed0;
     border-color: #5ffae0;
     color: white;

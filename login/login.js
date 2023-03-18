@@ -1,4 +1,5 @@
 document.getElementById("btnLogin").addEventListener("click", validateFunc);
+const form = document.querySelector('form');
 
 function validateFunc(e) {
     const loginEmail = document.getElementById("emailId").value;
@@ -30,21 +31,19 @@ async function validateLogin(e){
             loginPassword
         }
         const newUser = await axios.post('http://localhost:3000/login/user', obj);
+        form.reset();
+        alert("You are logged in successfully");  
         
-        if (newUser.status == 404){
-            document.body.innerHTML += `<h4> ${newUser.response.data.errorLogin}</h4>`
-        }
-        else{
-            console.log(newUser.data.availableUserDB);
-            alert("You are logged in successfully");  
-        }
         
     }
     catch (err) {
         console.log(err);
-        document.body.innerHTML += `<h4> ${err.response.data.errorLogin}</h4>`
-        // document.body.innerHTML += `<h4> Something went wrong </h4>`
-        // document.body.innerHTML += `<h4> ${err.response.data.error}</h4>`
+        if( typeof(err.response.data.error) == 'string'){
+            document.body.innerHTML += `<h4> ${err.response.data.error}</h4>`
+        }
+        else{
+            document.body.innerHTML += `<h4> Something went wrong </h4>`
+        }
     }
 }
 
