@@ -1,51 +1,50 @@
-document.getElementById("buttonSubmit").addEventListener("click", validateForm);
+document.getElementById("btnLogin").addEventListener("click", validateFunc);
 
-function validateForm(e) {
-    var name = document.getElementById("nameId").value;
-    var email = document.getElementById("emailId").value;
-    var password = document.getElementById("passwordId").value;
-
-    if (name == "") {
-      alert("Name must be filled out");
-      return false;
-    }
+function validateFunc(e) {
+    const loginEmail = document.getElementById("emailId").value;
+    const loginPassword = document.getElementById("passwordId").value;
     
-    if (email == "") {
+    if (loginEmail == "") {
       alert("Email must be filled out");
       return false;
     }
 
-    if (password == "") {
+    if (loginPassword == "") {
       alert("Password must be filled out");
       return false;
     }
 
     else{
-        signupFunc(e);
+        validateLogin(e);
     }
 }
 
-async function signupFunc(e){
+async function validateLogin(e){
     try{
         e.preventDefault();
-        const name = document.getElementById("nameId").value;
-        const email = document.getElementById("emailId").value;
-        const password = document.getElementById("passwordId").value;
+        const loginEmail = document.getElementById("emailId").value;
+        const loginPassword = document.getElementById("passwordId").value;
     
         const obj = {
-            name,
-            email,
-            password
+            loginEmail,
+            loginPassword
         }
-        const newUser = await axios.post('http://localhost:3000/signup/user', obj);
-        console.log(obj);
-        console.log(newUser.data.newUserData);
+        const newUser = await axios.post('http://localhost:3000/login/user', obj);
+        
+        if (newUser.status == 404){
+            document.body.innerHTML += `<h4> ${newUser.response.data.errorLogin}</h4>`
+        }
+        else{
+            console.log(newUser.data.availableUserDB);
+            alert("You are logged in successfully");  
+        }
         
     }
     catch (err) {
         console.log(err);
-        document.body.innerHTML += `<h4> Something went wrong </h4>`
-        document.body.innerHTML += `<h4> ${err.response.data.error}</h4>`
+        document.body.innerHTML += `<h4> ${err.response.data.errorLogin}</h4>`
+        // document.body.innerHTML += `<h4> Something went wrong </h4>`
+        // document.body.innerHTML += `<h4> ${err.response.data.error}</h4>`
     }
 }
 
