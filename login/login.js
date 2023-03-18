@@ -25,7 +25,7 @@ function validateForm(e) {
     }
 }
 
-function signupFunc(e){
+async function signupFunc(e){
     try{
         e.preventDefault();
         const name = document.getElementById("nameId").value;
@@ -37,14 +37,15 @@ function signupFunc(e){
             email,
             password
         }
-        // const lastExpense = await axios.post('http://localhost:4000/expense/add', obj);
-        // console.log(typeof(lastExpense.data.newUserData), lastExpense.data)
+        const newUser = await axios.post('http://localhost:3000/signup/user', obj);
         console.log(obj);
+        console.log(newUser.data.newUserData);
         
     }
     catch (err) {
         console.log(err);
-        document.body.innerHTML += `<h4> Something went wrong</h4>`
+        document.body.innerHTML += `<h4> Something went wrong </h4>`
+        document.body.innerHTML += `<h4> ${err.response.data.error}</h4>`
     }
 }
 
