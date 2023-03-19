@@ -1,3 +1,4 @@
+
 document.getElementById("btnLogin").addEventListener("click", validateFunc);
 const form = document.querySelector('form');
 
@@ -34,9 +35,13 @@ async function validateLogin(e){
         form.reset();
         alert("You are logged in successfully");
         localStorage.setItem('token', newUser.data.token);
-        window.location.href = "../expensePage/expensePage.html"; 
-        
-        
+        const premiumMeber = newUser.data.isPremium;
+        if(premiumMeber){
+            window.location.href = "../expensePage/premium.html";
+        } else{
+            window.location.href = "../expensePage/expensePage.html"; 
+        }
+           
     }
     catch (err) {
         console.log(err);

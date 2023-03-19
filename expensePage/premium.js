@@ -10,9 +10,16 @@ window.addEventListener("DOMContentLoaded", async () => {
 
         const getUserInfo = await axios.get("http://localhost:3000/user/info", { headers: {"Authorization" : token} });
         console.log(getUserInfo.data.isPremiumMember);
-        if(getUserInfo.data.isPremiumMember === true){
-            window.location.href = "../expensePage/premium.html";
+        if(getUserInfo.data.isPremiumMember !== true){
+            window.location.href = "../expensePage/expensePage.html"; 
         }
+
+        const getLeaderboard = await axios.get("http://localhost:3000/premium/allexpenses", { headers: {"Authorization" : token} });
+        console.log(getLeaderboard)
+        for (let i = 0; i < getLeaderboard.data.allExpenseDataFromDB.length; i++){
+            leaderBoardDetails(getLeaderboard.data.allExpenseDataFromDB[i]);
+        }
+
     }
     catch (err) {
         console.log(err);
@@ -22,10 +29,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
 document.getElementById("btnAdd").addEventListener("click", validateForm);
-
 const form = document.querySelector('form');
 
-document.getElementById("btnPremium").addEventListener("click", rzrPremium);
 
 function validateForm(e) {
     var amount = document.getElementById("amountId").value;
@@ -103,54 +108,10 @@ function expenseDetails(obj){
 
 }
 
-async function rzrPremium(e){
-    e.preventDefault();
-    const token = localStorage.getItem("token");
-    const response = await axios.get('http://localhost:3000/purchase/premiummembership', {headers: {"Authorization": token} });
-    
-    const options = {
-        "key" : response.data.key_id,
-        "order_id" : response.data.order.id,
-
-        "handler": async function(response){
-            console.log(response);
-            try{
-                await axios.post('http://localhost:3000/purchase/updatetransactionstatus', { 
-                    order_id: options.order_id,
-                    payment_id: response.razorpay_payment_id,
-                    status: "SUCCESSFUL"
-                }, { headers: {"Authorization": token} } );
-    
-                alert('You are a Premium User now');
-                window.location.href = "premium.html";
-
-            }
-            catch(err){
-                console.log(err);
-                document.body.innerHTML += `<h4> Something went wrong</h4>`
-            }
-
-        }
-    };
-
-    const rzpFront = new Razorpay(options);
-    rzpFront.open();
-
-    rzpFront.on('payment.failed', async (response) => {
-        try{
-            await axios.post('http://localhost:3000/purchase/updatetransactionstatus', { 
-                order_id: options.order_id,
-                payment_id: response.error.metadata.payment_id,
-                status: "FAILED"
-            }, { headers: {"Authorization": token} } );
-
-            alert('Something went wrong');
-
-        }
-        catch(err){
-            console.log(err);
-            document.body.innerHTML += `<h4> Something went wrong</h4>`
-        }
-        
-    });
+function leaderBoardDetails(arr){
+    const parentElem = document.getElementById('leaderBoard');
+    const newli = document.createElement('li');
+    newli.textContent = arr[0] + "-" + arr[1]
+    newli.className = "list-group-item";
+    parentElem.appendChild(newli);
 }

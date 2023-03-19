@@ -88,3 +88,11 @@ header {
     color: black;
     box-shadow: 5px 5px 10px black, -5px -5px 10px black;
 }
+
+#premBadge {
+    background-color: black;
+    color: gold;
+    border-color: gold;
+    padding: 5px;
+    border-radius: 10px;
+}
