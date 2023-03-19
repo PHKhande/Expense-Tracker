@@ -1,5 +1,4 @@
 
-
 window.addEventListener("DOMContentLoaded", async () => {
     try{
         const token = localStorage.getItem('token');
@@ -7,6 +6,13 @@ window.addEventListener("DOMContentLoaded", async () => {
         const allExpenses = await axios.get("http://localhost:3000/expense/all", { headers: {"Authorization" : token} });
         for (let i = 0; i < allExpenses.data.allExpenseData.length; i++){
             expenseDetails(allExpenses.data.allExpenseData[i]);
+        }
+
+        const getUserInfo = await axios.get("http://localhost:3000/user/info", { headers: {"Authorization" : token} });
+        console.log(getUserInfo.data.isPremiumMember);
+        if(getUserInfo.data.isPremiumMember == true){
+            const premiumButton = document.getElementById("btnPremium");
+            premiumButton.style.display = "none";
         }
     }
     catch (err) {
@@ -17,7 +23,10 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
 document.getElementById("btnAdd").addEventListener("click", validateForm);
+
 const form = document.querySelector('form');
+
+document.getElementById("btnPremium").addEventListener("click", rzrPremium);
 
 function validateForm(e) {
     var amount = document.getElementById("amountId").value;
@@ -67,18 +76,11 @@ async function expenseToDB(e) {
     }
 }
 
-
 function expenseDetails(obj){
     var parentElem = document.getElementById('expenseDetailsUl');
     var newli = document.createElement('li');
     newli.textContent = obj.amountDB + "-" + obj.categoryDB + "-" + obj.descriptionDB;
     newli.className = "list-group-item";
-
-    // var editBtn = document.createElement('button');
-    // editBtn.id = 'edtBtn';
-    // editBtn.className = 'btn btn-success edit';
-    // editBtn.appendChild(document.createTextNode(" Edit Expense "));
-    // newli.appendChild(editBtn)
 
     var delBtn = document.createElement('button');
     delBtn.id = 'DelBtn';
@@ -87,22 +89,6 @@ function expenseDetails(obj){
     newli.appendChild(delBtn)
 
     parentElem.appendChild(newli);
-
-    // editBtn.onclick = async() => {
-    //     try{
-    //         document.getElementById('expenseAmount').value = obj.expAmt
-    //         document.getElementById('expenseCategory').value = obj.category
-    //         document.getElementById('expenseDescription').value = obj.desc
-        
-    //         await axios.delete(`http://localhost:4000/expense/${obj.id}`);
-    //         parentElem.removeChild(newli);
-    //     }
-    //     catch (err) {
-    //         console.log(err);
-    //         document.body.innerHTML += `<h4> Something went wrong</h4>`
-    //     }
-    // }
-
     delBtn.onclick = async() => {
         try{
             const token = localStorage.getItem('token');
@@ -116,4 +102,57 @@ function expenseDetails(obj){
         
     }
 
+}
+
+async function rzrPremium(e){
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    const response = await axios.get('http://localhost:3000/purchase/premiummembership', {headers: {"Authorization": token} });
+    
+    const options = {
+        "key" : response.data.key_id,
+        "order_id" : response.data.order.id,
+
+        "handler": async function(response){
+            console.log(response);
+            try{
+                await axios.post('http://localhost:3000/purchase/updatetransactionstatus', { 
+                    order_id: options.order_id,
+                    payment_id: response.razorpay_payment_id,
+                    status: "SUCCESSFUL"
+                }, { headers: {"Authorization": token} } );
+    
+                alert('You are a Premium User now');
+                location.reload();
+
+            }
+            catch(err){
+                console.log(err);
+                document.body.innerHTML += `<h4> Something went wrong</h4>`
+            }
+
+        }
+    };
+
+    const rzpFront = new Razorpay(options);
+    rzpFront.open();
+
+    rzpFront.on('payment.failed', async (response) => {
+        try{
+            await axios.post('http://localhost:3000/purchase/updatetransactionstatus', { 
+                order_id: options.order_id,
+                payment_id: response.error.metadata.payment_id,
+                status: "FAILED"
+            }, { headers: {"Authorization": token} } );
+
+            alert('Something went wrong');
+            location.reload();
+
+        }
+        catch(err){
+            console.log(err);
+            document.body.innerHTML += `<h4> Something went wrong</h4>`
+        }
+        
+    });
 }
