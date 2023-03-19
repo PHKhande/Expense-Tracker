@@ -1,10 +1,8 @@
 window.addEventListener("DOMContentLoaded", async () => {
     try{
-        const allExpenses = await axios.get("http://localhost:4000/expenses/all");
-        // console.log(allExpenses.data.allExpensesfromDB);
-        for (let i = 0; i < allExpenses.data.allExpensesfromDB.length; i++){
-            // console.log(allExpenses.data.allExpensesfromDB[i])
-            expenseDetails(allExpenses.data.allExpensesfromDB[i]);
+        const allExpenses = await axios.get("http://localhost:3000/expense/all");
+        for (let i = 0; i < allExpenses.data.allExpenseData.length; i++){
+            expenseDetails(allExpenses.data.allExpenseData[i]);
         }
     }
     catch (err) {
@@ -59,9 +57,7 @@ async function expenseToDB(e) {
             category,
             description
         }
-        const lastExpense = await axios.post('http://localhost:4000/expense/add', obj);
-        // console.log(typeof(lastExpense.data.newUserData), lastExpense.data)
-        
+        const lastExpense = await axios.post('http://localhost:3000/expense/add', obj);
         expenseDetails(lastExpense.data.newExpenseData);
     }
     catch (err) {
@@ -85,7 +81,7 @@ function expenseDetails(obj){
 
     var delBtn = document.createElement('button');
     delBtn.id = 'DelBtn';
-    delBtn.className = 'btn btn-danger delete p-2';
+    delBtn.className = 'btn btn-danger delete p-2 float-right';
     delBtn.appendChild(document.createTextNode(" Delete Expense "));
     newli.appendChild(delBtn)
 
@@ -108,7 +104,7 @@ function expenseDetails(obj){
 
     delBtn.onclick = async() => {
         try{
-            // await axios.delete(`http://localhost:4000/expense/${obj.id}`);
+            await axios.delete(`http://localhost:3000/expense/${obj.id}`);
             parentElem.removeChild(newli);
         }
         catch (err) {

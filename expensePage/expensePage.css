@@ -41,17 +41,35 @@ header {
     border-radius: 15px;
 }
 
+@media (max-width: 1050px) {
+  #btnAdd {
+    width: 100%;
+    margin: 0;
+  }
+}
+
 #btnAdd:hover{
     background-color: #c22ed0;
     border-color: #5ffae0;
     color: white;
 }
 
-
-
 .neumorphic-table {
     background-color: linear-gradient(to bottom right, #c22ed0, #5ffae0);
     padding: 20px;
     border-radius: 15px;
     box-shadow: 5px 5px 10px #c22ed0, -5px -5px 10px #5ffae0;
+}
+
+#DelBtn {
+    background-color: white;
+    color: red;
+    border-color: red;
+    border-radius: 5px;
+}
+
+#DelBtn:hover{
+    background-color: red;
+    border-color: #02ffd5;
+    color: white;
 }

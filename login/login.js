@@ -32,7 +32,8 @@ async function validateLogin(e){
         }
         const newUser = await axios.post('http://localhost:3000/login/user', obj);
         form.reset();
-        alert("You are logged in successfully");  
+        alert("You are logged in successfully");
+        window.location.href = "../expensePage/expensePage.html"; 
         
         
     }
