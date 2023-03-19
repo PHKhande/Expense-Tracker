@@ -46,21 +46,20 @@ header {
     background-color: #c22ed0;
     border-color: #5ffae0;
     color: white;
-  }
+}
 
 .neumorphic-form {
     background-color: linear-gradient(to bottom right, #c22ed0, #5ffae0);
     padding: 30px;
     border-radius: 15px;
     box-shadow: 5px 5px 10px #c22ed0, -5px -5px 10px #5ffae0;
-  }
+}
   
 
-  .neumorphic-form label
- {
+.neumorphic-form label{
     color: #1e0455;
     font-weight: bold;
-  }
+}
 
   .neumorphic-form input[type="text"],
   .neumorphic-form input[type="email"],

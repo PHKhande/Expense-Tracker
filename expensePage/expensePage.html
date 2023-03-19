@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang = "en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="expensePage.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <title>Expense Tracker</title>
+</head>
+
+<body>
+    <header class="text-white">
+        <div class="container p-2">
+            <h1> Expense Tracker </h1>
+        </div>
+        <hr>
+    </header>
+
+    <div class="container">
+    <div class="row justify-content-center">
+
+        <div class="col-6 col-md-5 mx-auto container neumorphic-form">
+
+            <div class="container">
+                <h4> Enter your expenses of this month</h4>
+                <hr>
+            </div>
+            
+            <form class="form p-2 mx-auto">
+    
+                <div class="form-group">
+                    <label for="amountId">Expense Amount</label>
+                    <input id="amountId" type="number" class="form-control" >
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="categoryId"> Choose a category </label>
+                    <select name="category" id="categoryId" >
+                        <option value="Electronics">Electronics</option>
+                        <option value="Electricity & Water">Electricity & Water</option>
+                        <option value="Food">Food</option>
+                        <option value="Fuel">Fuel</option>
+                        <option value="General">General</option>
+                        <option value="Movies">Movies</option>
+                        <option value="Studies">Studies</option>
+                    </select> 
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="descriptionId" >Description</label>
+                    <input id="descriptionId" type="text" class="form-control" >
+                </div>
+                
+                <button id="btnAdd" type="submit" class="btn btn-primary">Add Expense</button> 
+            </form>
+        </div>
+
+        <div class="col-6 col-md-5 mx-auto container neumorphic-table">
+
+            <div class="container p-1">
+                <h4> Your this month expenses</h4>
+                <hr>
+            </div>
+            
+            <ul id = "expenseDetailsUl" class=" p-2 list-group">
+                
+            </ul>
+        </div>
+
+    </div>
+</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+    <script src="expense.js"></script>
+</body>
+</html>
