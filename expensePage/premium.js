@@ -9,15 +9,9 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
 
         const getUserInfo = await axios.get("http://localhost:3000/user/info", { headers: {"Authorization" : token} });
-        console.log(getUserInfo.data.isPremiumMember);
+        // console.log(getUserInfo.data);
         if(getUserInfo.data.isPremiumMember !== true){
             window.location.href = "../expensePage/expensePage.html"; 
-        }
-
-        const getLeaderboard = await axios.get("http://localhost:3000/premium/allexpenses", { headers: {"Authorization" : token} });
-        console.log(getLeaderboard)
-        for (let i = 0; i < getLeaderboard.data.allExpenseDataFromDB.length; i++){
-            leaderBoardDetails(getLeaderboard.data.allExpenseDataFromDB[i]);
         }
 
     }
@@ -27,10 +21,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 })
 
-
 document.getElementById("btnAdd").addEventListener("click", validateForm);
 const form = document.querySelector('form');
-
 
 function validateForm(e) {
     var amount = document.getElementById("amountId").value;
@@ -73,6 +65,7 @@ async function expenseToDB(e) {
         }
         const lastExpense = await axios.post('http://localhost:3000/expense/add', obj, { headers: {"Authorization" : token} });
         expenseDetails(lastExpense.data.newExpenseData);
+        window.location.href = "premium.html";
     }
     catch (err) {
         console.log(err);
@@ -98,6 +91,7 @@ function expenseDetails(obj){
             const token = localStorage.getItem('token');
             await axios.delete(`http://localhost:3000/expense/${obj.id}`, { headers: {"Authorization" : token} });
             parentElem.removeChild(newli);
+            window.location.href = "premium.html";
         }
         catch (err) {
             console.log(err);
@@ -108,10 +102,32 @@ function expenseDetails(obj){
 
 }
 
-function leaderBoardDetails(arr){
+const btnLB = document.getElementById("btnLeaderBoard");
+btnLB.addEventListener("click", getLeaderBoardFromDB);
+
+
+
+async function getLeaderBoardFromDB(){
+
+    try{
+        const token = localStorage.getItem('token');
+        const getLeaderboard = await axios.get("http://localhost:3000/premium/allexpenses", { headers: {"Authorization" : token} });
+        btnLB.style.display = "none";
+        for (let i = 0; i < getLeaderboard.data.allExpenseDataFromDB.length; i++){
+            leaderBoardDetails(getLeaderboard.data.allExpenseDataFromDB[i]);
+        }
+    }
+    catch (err) {
+        console.log(err);
+        document.body.innerHTML += `<h4> Something went wrong</h4>`
+    }
+    
+}
+
+function leaderBoardDetails(obj){
     const parentElem = document.getElementById('leaderBoard');
     const newli = document.createElement('li');
-    newli.textContent = arr[0] + "-" + arr[1]
+    newli.textContent = obj.name + "-" + obj.totalExpense
     newli.className = "list-group-item";
     parentElem.appendChild(newli);
 }
