@@ -24,8 +24,8 @@ async function forgotPassword(e){
             resetEmail
         }
         const forgotEmail = await axios.post('http://localhost:3000/password/forgotpassword', obj);
-        window.location.href = "../login/login.html";
-           
+        document.body.innerHTML = `<h2> Link has been sent to your email </h2>`;
+
     }
 
     catch (err) {

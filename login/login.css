@@ -27,6 +27,13 @@ header {
     color: white;
   }
 
+  @media (max-width: 600px) {
+    #btnLogin {
+      width: 100%;
+      margin: 0;
+    }
+  }
+
 .neumorphic-form {
     background-color: linear-gradient(to bottom right, #c22ed0, #5ffae0);
     padding: 30px;
