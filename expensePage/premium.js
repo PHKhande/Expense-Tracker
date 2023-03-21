@@ -1,10 +1,20 @@
 const token = localStorage.getItem('token');
 const pagination = document.getElementById('pagination');
+
+const page = 1;
+
+let limit = 3;
+const rowNumber = document.getElementById('noOfRows');
+
+rowNumber.addEventListener("change", () => {
+    localStorage.setItem('noOfRows', Number(rowNumber.value));
+    limit = localStorage.getItem('noOfRows');
+  });
+
+
 window.addEventListener("DOMContentLoaded", async () => {
     try{
-
-        const page = 1;
-        const FirstExpenses = await axios.get(`http://localhost:3000/expense/all?page=${page}`, { headers: {"Authorization" : token} });
+        const FirstExpenses = await axios.get(`http://localhost:3000/expense/all?page=${page}&limit=${limit}`, { headers: {"Authorization" : token} });
         console.log(FirstExpenses)
         for (let i = 0; i < FirstExpenses.data.expenses.length; i++){
             expenseDetails(FirstExpenses.data.expenses[i]);
@@ -220,7 +230,7 @@ async function getExpenses(page){
         while (parent.hasChildNodes()){
             parent.removeChild(parent.firstChild)
         }
-        const response = await axios.get(`http://localhost:3000/expense/all?page=${page}`, { headers: {"Authorization" : token} });
+        const response = await axios.get(`http://localhost:3000/expense/all?page=${page}&limit=${limit}`, { headers: {"Authorization" : token} });
         
         for (let i = 0; i < response.data.expenses.length; i++){
             expenseDetails(response.data.expenses[i]);
