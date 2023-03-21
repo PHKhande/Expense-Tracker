@@ -1,11 +1,16 @@
 const token = localStorage.getItem('token');
+const pagination = document.getElementById('pagination');
+
 window.addEventListener("DOMContentLoaded", async () => {
     try{
 
-        const allExpenses = await axios.get("http://localhost:3000/expense/all", { headers: {"Authorization" : token} });
-        for (let i = 0; i < allExpenses.data.allExpenseData.length; i++){
-            expenseDetails(allExpenses.data.allExpenseData[i]);
+        const page = 1;
+        const FirstExpenses = await axios.get(`http://localhost:3000/expense/all?page=${page}`, { headers: {"Authorization" : token} });
+        console.log(FirstExpenses)
+        for (let i = 0; i < FirstExpenses.data.expenses.length; i++){
+            expenseDetails(FirstExpenses.data.expenses[i]);
         }
+        showPagination(FirstExpenses.data);
 
         const getUserInfo = await axios.get("http://localhost:3000/user/info", { headers: {"Authorization" : token} });
         console.log(getUserInfo.data.isPremiumMember);
@@ -25,7 +30,7 @@ document.getElementById("btnAdd").addEventListener("click", validateForm);
 
 document.getElementById("btnPremium").addEventListener("click", rzrPremium);
 
-document.getElementById("reportDownload").addEventListener("click", download);
+// document.getElementById("reportDownload").addEventListener("click", download);
 
 
 function validateForm(e) {
@@ -153,3 +158,65 @@ async function rzrPremium(e){
     });
 }
 
+function showPagination( {
+    currentPage,
+    hasNextPage,
+    nextPage,
+    hasPreviousPage,
+    previousPage,
+    lastPage
+}) {
+
+    pagination.innerHTML = '';
+
+    if (hasPreviousPage) {
+        const btn1 = document.createElement('button');
+        btn1.className = "button border border-info p-2 mx-auto text-info"
+        btn1.innerHTML = previousPage;
+        btn1.addEventListener('click', () => getExpenses(previousPage));
+        pagination.appendChild(btn1);
+    }
+
+    const btn2 = document.createElement('button');
+    btn2.className = "button border border-info p-2 mx-auto text-info"
+    btn2.innerHTML = currentPage;
+    btn2.addEventListener('click', () => getExpenses(currentPage));
+    pagination.appendChild(btn2);
+
+    
+    if (hasNextPage) {
+            const btn3 = document.createElement('button');
+            btn3.className = "button border border-info p-2 mx-auto text-info"
+            btn3.innerHTML = nextPage;
+            btn3.addEventListener('click', () => getExpenses(nextPage));
+            pagination.appendChild(btn3);
+    }
+
+    if(currentPage != lastPage){
+        const btn4 = document.createElement('button');
+        btn4.className = "button border border-info p-2 mx-auto text-info float-right"
+        btn4.innerHTML = "Last Page";
+        btn4.addEventListener('click', () => getExpenses(lastPage));
+        pagination.appendChild(btn4);
+    }
+    
+
+}
+
+async function getExpenses(page){
+    try{
+        const parent = document.getElementById('expenseDetailsUl');
+        while (parent.hasChildNodes()){
+            parent.removeChild(parent.firstChild)
+        }
+        const response = await axios.get(`http://localhost:3000/expense/all?page=${page}`, { headers: {"Authorization" : token} });
+        
+        for (let i = 0; i < response.data.expenses.length; i++){
+            expenseDetails(response.data.expenses[i]);
+        }
+        showPagination(response.data);
+    } catch(err) {
+        console.log(err);
+    }
+    
+}
