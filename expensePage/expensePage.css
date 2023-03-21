@@ -97,17 +97,20 @@ header {
     border-radius: 10px;
 }
 
-#btnLeaderBoard {
+.goldnblack {
+    background-color: black;
     color: white;
     padding: 10px;
     border-radius: 10px;
     display: block; 
     margin: 0 auto;
 }
-  #btnLeaderBoard:hover {
+.goldnblack:hover {
     background-color: white;
     color: black;
   }
+
+
 
 
   

@@ -1,7 +1,6 @@
-
+const token = localStorage.getItem('token');
 window.addEventListener("DOMContentLoaded", async () => {
     try{
-        const token = localStorage.getItem('token');
 
         const allExpenses = await axios.get("http://localhost:3000/expense/all", { headers: {"Authorization" : token} });
         for (let i = 0; i < allExpenses.data.allExpenseData.length; i++){
@@ -14,6 +13,10 @@ window.addEventListener("DOMContentLoaded", async () => {
             window.location.href = "../expensePage/expensePage.html"; 
         }
 
+        const getReportInfo = await axios.get('http://localhost:3000/premium/user/download/all', { headers: {"Authorization" : token} });
+        for (let i = 0; i < getReportInfo.data.AllURLs.length; i++){
+            reportDetails(getReportInfo.data.AllURLs[i].fileurl);
+        }
     }
     catch (err) {
         console.log(err);
@@ -56,7 +59,6 @@ async function expenseToDB(e) {
         const amount = document.getElementById("amountId").value;
         const category = document.getElementById("categoryId").value;
         const description = document.getElementById("descriptionId").value;
-        const token = localStorage.getItem('token');
     
         const obj = {
             amount,
@@ -88,7 +90,6 @@ function expenseDetails(obj){
     parentElem.appendChild(newli);
     delBtn.onclick = async() => {
         try{
-            const token = localStorage.getItem('token');
             await axios.delete(`http://localhost:3000/expense/${obj.id}`, { headers: {"Authorization" : token} });
             parentElem.removeChild(newli);
             window.location.href = "premium.html";
@@ -110,7 +111,6 @@ btnLB.addEventListener("click", getLeaderBoardFromDB);
 async function getLeaderBoardFromDB(){
 
     try{
-        const token = localStorage.getItem('token');
         const getLeaderboard = await axios.get("http://localhost:3000/premium/allexpenses", { headers: {"Authorization" : token} });
         btnLB.style.display = "none";
         for (let i = 0; i < getLeaderboard.data.allExpenseDataFromDB.length; i++){
@@ -130,4 +130,35 @@ function leaderBoardDetails(obj){
     newli.textContent = obj.name + "-" + obj.totalExpense
     newli.className = "list-group-item";
     parentElem.appendChild(newli);
+}
+
+
+document.getElementById("reportDownload").addEventListener("click", downloadReport);
+
+async function downloadReport(){
+    const response = await axios.get(`http://localhost:3000/premium/user/download`, { headers: {"Authorization" : token} });
+    
+    if(response.status === 200){
+        const a = document.createElement('a');
+        a.href = response.data.fileURL;
+        a.download = 'myexpense.csv';
+        a.click();
+        
+        reportDetails(response.data.fileURL);
+
+    } else {
+        throw new Error(response.data.message)
+    }
+}
+
+function reportDetails(URL){
+    const parenElem = document.getElementById('reportDownloadul');
+    const newli = document.createElement('li');
+    newli.className = "list-group-item";
+    const a = document.createElement('a');
+    a.href = URL;
+    a.textContent = "Download Report";
+    newli.appendChild(a)
+    
+    parenElem.appendChild(newli);
 }

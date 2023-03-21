@@ -1,7 +1,6 @@
-
+const token = localStorage.getItem('token');
 window.addEventListener("DOMContentLoaded", async () => {
     try{
-        const token = localStorage.getItem('token');
 
         const allExpenses = await axios.get("http://localhost:3000/expense/all", { headers: {"Authorization" : token} });
         for (let i = 0; i < allExpenses.data.allExpenseData.length; i++){
@@ -20,12 +19,14 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 })
 
+const form = document.querySelector('form');
 
 document.getElementById("btnAdd").addEventListener("click", validateForm);
 
-const form = document.querySelector('form');
-
 document.getElementById("btnPremium").addEventListener("click", rzrPremium);
+
+document.getElementById("reportDownload").addEventListener("click", download);
+
 
 function validateForm(e) {
     var amount = document.getElementById("amountId").value;
@@ -59,7 +60,6 @@ async function expenseToDB(e) {
         const amount = document.getElementById("amountId").value;
         const category = document.getElementById("categoryId").value;
         const description = document.getElementById("descriptionId").value;
-        const token = localStorage.getItem('token');
     
         const obj = {
             amount,
@@ -90,7 +90,6 @@ function expenseDetails(obj){
     parentElem.appendChild(newli);
     delBtn.onclick = async() => {
         try{
-            const token = localStorage.getItem('token');
             await axios.delete(`http://localhost:3000/expense/${obj.id}`, { headers: {"Authorization" : token} });
             parentElem.removeChild(newli);
         }
@@ -105,7 +104,6 @@ function expenseDetails(obj){
 
 async function rzrPremium(e){
     e.preventDefault();
-    const token = localStorage.getItem("token");
     const response = await axios.get('http://localhost:3000/purchase/premiummembership', {headers: {"Authorization": token} });
     
     const options = {
@@ -154,3 +152,4 @@ async function rzrPremium(e){
         
     });
 }
+
