@@ -23,7 +23,7 @@ async function forgotPassword(e){
         const obj = {
             resetEmail
         }
-        const forgotEmail = await axios.post('http://localhost:3000/password/forgotpassword', obj);
+        const forgotEmail = await axios.post('http://3.145.74.157:3000/password/forgotpassword', obj);
         document.body.innerHTML = `<h2> Link has been sent to your email </h2>`;
 
     }

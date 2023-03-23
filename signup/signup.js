@@ -39,7 +39,7 @@ async function signupFunc(e){
             email,
             password
         }
-        const newUser = await axios.post('http://localhost:3000/signup/user', obj);
+        const newUser = await axios.post('http://3.145.74.157:3000/signup/user', obj);
         window.location.href = "../login/login.html";
         // console.log(newUser.data.newUserData);
         

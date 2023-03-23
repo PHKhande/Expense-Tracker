@@ -14,14 +14,14 @@ rowNumber.addEventListener("change", () => {
 window.addEventListener("DOMContentLoaded", async () => {
     try{
 
-        const FirstExpenses = await axios.get(`http://localhost:3000/expense/all?page=${page}&limit=${limit}`, { headers: {"Authorization" : token} });
+        const FirstExpenses = await axios.get(`http://3.145.74.157:3000/expense/all?page=${page}&limit=${limit}`, { headers: {"Authorization" : token} });
         console.log(FirstExpenses)
         for (let i = 0; i < FirstExpenses.data.expenses.length; i++){
             expenseDetails(FirstExpenses.data.expenses[i]);
         }
         showPagination(FirstExpenses.data);
 
-        const getUserInfo = await axios.get("http://localhost:3000/user/info", { headers: {"Authorization" : token} });
+        const getUserInfo = await axios.get("http://3.145.74.157:3000/user/info", { headers: {"Authorization" : token} });
         console.log(getUserInfo.data.isPremiumMember);
         if(getUserInfo.data.isPremiumMember === true){
             window.location.href = "../expensePage/premium.html";
@@ -78,7 +78,7 @@ async function expenseToDB(e) {
             category,
             description
         }
-        const lastExpense = await axios.post('http://localhost:3000/expense/add', obj, { headers: {"Authorization" : token} });
+        const lastExpense = await axios.post('http://3.145.74.157:3000/expense/add', obj, { headers: {"Authorization" : token} });
         expenseDetails(lastExpense.data.newExpenseData);
     }
     catch (err) {
@@ -102,7 +102,7 @@ function expenseDetails(obj){
     parentElem.appendChild(newli);
     delBtn.onclick = async() => {
         try{
-            await axios.delete(`http://localhost:3000/expense/${obj.id}`, { headers: {"Authorization" : token} });
+            await axios.delete(`http://3.145.74.157:3000/expense/${obj.id}`, { headers: {"Authorization" : token} });
             parentElem.removeChild(newli);
         }
         catch (err) {
@@ -116,7 +116,7 @@ function expenseDetails(obj){
 
 async function rzrPremium(e){
     e.preventDefault();
-    const response = await axios.get('http://localhost:3000/purchase/premiummembership', {headers: {"Authorization": token} });
+    const response = await axios.get('http://3.145.74.157:3000/purchase/premiummembership', {headers: {"Authorization": token} });
     
     const options = {
         "key" : response.data.key_id,
@@ -125,7 +125,7 @@ async function rzrPremium(e){
         "handler": async function(response){
             console.log(response);
             try{
-                await axios.post('http://localhost:3000/purchase/updatetransactionstatus', { 
+                await axios.post('http://3.145.74.157:3000/purchase/updatetransactionstatus', { 
                     order_id: options.order_id,
                     payment_id: response.razorpay_payment_id,
                     status: "SUCCESSFUL"
@@ -148,7 +148,7 @@ async function rzrPremium(e){
 
     rzpFront.on('payment.failed', async (response) => {
         try{
-            await axios.post('http://localhost:3000/purchase/updatetransactionstatus', { 
+            await axios.post('http://3.145.74.157:3000/purchase/updatetransactionstatus', { 
                 order_id: options.order_id,
                 payment_id: response.error.metadata.payment_id,
                 status: "FAILED"
@@ -216,7 +216,7 @@ async function getExpenses(page){
         while (parent.hasChildNodes()){
             parent.removeChild(parent.firstChild)
         }
-        const response = await axios.get(`http://localhost:3000/expense/all?page=${page}&limit=${limit}`, { headers: {"Authorization" : token} });
+        const response = await axios.get(`http://3.145.74.157:3000/expense/all?page=${page}&limit=${limit}`, { headers: {"Authorization" : token} });
         
         for (let i = 0; i < response.data.expenses.length; i++){
             expenseDetails(response.data.expenses[i]);
