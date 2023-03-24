@@ -50,7 +50,7 @@ ForgotPasswordRequest.belongsTo(ExpUser, { constraints: true, onDelete: 'CASCADE
 ExpUser.hasMany(ForgotPasswordRequest);
 DownloadedFile.belongsTo(ExpUser, { constraints: true, onDelete: 'CASCADE' });
 ExpUser.hasMany(DownloadedFile);
-
+console.log("checking")
 
 sequelize
   .sync()
