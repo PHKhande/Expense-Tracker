@@ -23,7 +23,7 @@ exports.getResetEmailInfo = async (req, res, next) => {
     });
 
     const uuid = forgotRequest.id;
-    const changePassURL = `http://${process.env.IP_ADDRESS}:3000/password/resetpassword/${uuid}`;
+    const changePassURL = `http://3.137.219.239:3000/password/resetpassword/${uuid}`;
 
 
     // require('dotenv').config(); 

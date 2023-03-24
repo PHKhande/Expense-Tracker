@@ -14,20 +14,20 @@ rowNumber.addEventListener("change", () => {
 
 window.addEventListener("DOMContentLoaded", async () => {
     try{
-        const FirstExpenses = await axios.get(`http://${process.env.IP_ADDRESS}:3000/expense/all?page=${page}&limit=${limit}`, { headers: {"Authorization" : token} });
+        const FirstExpenses = await axios.get(`http://3.137.219.239:3000/expense/all?page=${page}&limit=${limit}`, { headers: {"Authorization" : token} });
         console.log(FirstExpenses)
         for (let i = 0; i < FirstExpenses.data.expenses.length; i++){
             expenseDetails(FirstExpenses.data.expenses[i]);
         }
         showPagination(FirstExpenses.data);
 
-        const getUserInfo = await axios.get("http://${process.env.IP_ADDRESS}:3000/user/info", { headers: {"Authorization" : token} });
+        const getUserInfo = await axios.get("http://3.137.219.239:3000/user/info", { headers: {"Authorization" : token} });
         // console.log(getUserInfo.data);
         if(getUserInfo.data.isPremiumMember !== true){
             window.location.href = "../expensePage/expensePage.html"; 
         }
 
-        const getReportInfo = await axios.get('http://${process.env.IP_ADDRESS}:3000/premium/user/download/all', { headers: {"Authorization" : token} });
+        const getReportInfo = await axios.get('http://3.137.219.239:3000/premium/user/download/all', { headers: {"Authorization" : token} });
         for (let i = 0; i < getReportInfo.data.AllURLs.length; i++){
             reportDetails(getReportInfo.data.AllURLs[i].fileurl);
         }
@@ -81,7 +81,7 @@ async function expenseToDB(e) {
             category,
             description
         }
-        const lastExpense = await axios.post('http://${process.env.IP_ADDRESS}:3000/expense/add', obj, { headers: {"Authorization" : token} });
+        const lastExpense = await axios.post('http://3.137.219.239:3000/expense/add', obj, { headers: {"Authorization" : token} });
         expenseDetails(lastExpense.data.newExpenseData);
         window.location.href = "premium.html";
     }
@@ -106,7 +106,7 @@ function expenseDetails(obj){
     parentElem.appendChild(newli);
     delBtn.onclick = async() => {
         try{
-            await axios.delete(`http://${process.env.IP_ADDRESS}:3000/expense/${obj.id}`, { headers: {"Authorization" : token} });
+            await axios.delete(`http://3.137.219.239:3000/expense/${obj.id}`, { headers: {"Authorization" : token} });
             parentElem.removeChild(newli);
             window.location.href = "premium.html";
         }
@@ -127,7 +127,7 @@ btnLB.addEventListener("click", getLeaderBoardFromDB);
 async function getLeaderBoardFromDB(){
 
     try{
-        const getLeaderboard = await axios.get("http://${process.env.IP_ADDRESS}:3000/premium/allexpenses", { headers: {"Authorization" : token} });
+        const getLeaderboard = await axios.get("http://3.137.219.239:3000/premium/allexpenses", { headers: {"Authorization" : token} });
         btnLB.style.display = "none";
         for (let i = 0; i < getLeaderboard.data.allExpenseDataFromDB.length; i++){
             leaderBoardDetails(getLeaderboard.data.allExpenseDataFromDB[i]);
@@ -152,7 +152,7 @@ function leaderBoardDetails(obj){
 document.getElementById("reportDownload").addEventListener("click", downloadReport);
 
 async function downloadReport(){
-    const response = await axios.get(`http://${process.env.IP_ADDRESS}:3000/premium/user/download`, { headers: {"Authorization" : token} });
+    const response = await axios.get(`http://3.137.219.239:3000/premium/user/download`, { headers: {"Authorization" : token} });
     
     if(response.status === 200){
         const a = document.createElement('a');
@@ -230,7 +230,7 @@ async function getExpenses(page){
         while (parent.hasChildNodes()){
             parent.removeChild(parent.firstChild)
         }
-        const response = await axios.get(`http://${process.env.IP_ADDRESS}:3000/expense/all?page=${page}&limit=${limit}`, { headers: {"Authorization" : token} });
+        const response = await axios.get(`http://3.137.219.239:3000/expense/all?page=${page}&limit=${limit}`, { headers: {"Authorization" : token} });
         
         for (let i = 0; i < response.data.expenses.length; i++){
             expenseDetails(response.data.expenses[i]);

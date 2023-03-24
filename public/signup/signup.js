@@ -39,7 +39,7 @@ async function signupFunc(e){
             email,
             password
         }
-        const newUser = await axios.post(`http://${process.env.IP_ADDRESS}:3000/signup/user`, obj);
+        const newUser = await axios.post(`http://3.137.219.239:3000/signup/user`, obj);
         window.location.href = "../login/login.html";
         // console.log(newUser.data.newUserData);
         
