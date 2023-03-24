@@ -31,7 +31,7 @@ async function validateLogin(e){
             loginEmail,
             loginPassword
         }
-        const newUser = await axios.post('http://3.145.74.157:3000/login/user', obj);
+        const newUser = await axios.post('http://${process.env.IP_ADDRESS}:3000/login/user', obj);
         form.reset();
         alert("You are logged in successfully");
         localStorage.setItem('token', newUser.data.token);
