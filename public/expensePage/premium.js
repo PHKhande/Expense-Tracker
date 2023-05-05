@@ -27,10 +27,10 @@ window.addEventListener("DOMContentLoaded", async () => {
             window.location.href = "../expensePage/expensePage.html"; 
         }
 
-        const getReportInfo = await axios.get('http://localhost:3000/premium/user/download/all', { headers: {"Authorization" : token} });
-        for (let i = 0; i < getReportInfo.data.AllURLs.length; i++){
-            reportDetails(getReportInfo.data.AllURLs[i].fileurl);
-        }
+        // const getReportInfo = await axios.get('http://localhost:3000/premium/user/download/all', { headers: {"Authorization" : token} });
+        // for (let i = 0; i < getReportInfo.data.AllURLs.length; i++){
+        //     reportDetails(getReportInfo.data.AllURLs[i].fileurl);
+        // }
 
         
     }

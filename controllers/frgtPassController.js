@@ -21,7 +21,7 @@ exports.getResetEmailInfo = async (req, res, next) => {
     if(!resetUser){
         throw new Error('Not a authorized user');
     }
-    const idUser = resetUser.id;
+    const idUser = resetUser[0].id;
 
     const forgotRequest = new FPRequest({
         isActive: true,
@@ -93,11 +93,11 @@ exports.getResetlinkInfo = async (req, res, next) => {
         const idReset = req.params.resetId;
         // const request = await ForgotPasswordRequest.findOne( {where: {id: idReset}} );
         const request = await FPRequest.find( {'_id': idReset} );
-
+        console.log(request)
         if(!request){
             throw new Error('No such has been made');
         }
-        if(request[0].isActive == true){
+        if(request[0].isActive == 'true'){
             res.status(201).sendFile(path.join(__dirname, '../', 'public', 'form.html'));
         }
         else{
@@ -126,8 +126,9 @@ exports.postResetPasswordInfo = async (req, res, next) => {
         if(!request){
             throw new Error('No link was created');
         }
-        if(request[0].isActive == true){
-            const user = await User.findById(idUser);
+        if(request[0].isActive == 'true'){
+            // console.log(request);
+            const user = await User.findById(request[0].userId);
             user.password = encryptPass;
             user.save();
 
@@ -150,7 +151,7 @@ exports.postResetPasswordInfo = async (req, res, next) => {
     }
     catch(err){
         console.log(err);
-        await t.rollback();
+        // await t.rollback();
         res.status(404).json({message: err});
     }
     

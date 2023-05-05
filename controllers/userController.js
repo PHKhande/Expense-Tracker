@@ -105,6 +105,7 @@ exports.getUserInfo = async (req, res, next) => {
 exports.downloadExpense = async (req, res, next) => {
 
   try{
+    
     const expenses = await req.user.getExpenses();
     const stringifiedExpense = JSON.stringify(expenses);
     const userID = req.user.id;

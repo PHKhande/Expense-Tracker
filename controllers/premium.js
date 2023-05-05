@@ -1,18 +1,26 @@
-const ExpTrckUser = require('../models/user');
-const sequelize = require('../util/database');
+// const ExpTrckUser = require('../models/user');
+
+const User = require('../modelsnosql/user');
+// const sequelize = require('../util/database');
 
 exports.getAllExpensesFromDB = async (req, res, next) => {
 
     try{
-        const leaderBoard = await ExpTrckUser.findAll( {
-            attributes: [
-                'name',
-                'totalExpense'
-            ],
-            group: ['user.id'],
-            order: [[sequelize.literal('totalExpense'), 'DESC']]
-        });
-        res.status(201).json( {allExpenseDataFromDB:leaderBoard} ); 
+
+        const ldrbrd = await User.find().select('name totalExpense').sort({totalExpense: -1}).exec();
+        console.log(ldrbrd);
+
+        // const leaderBoard = await ExpTrckUser.findAll( {
+        //     attributes: [
+        //         'name',
+        //         'totalExpense'
+        //     ],
+        //     group: ['user.id'],
+        //     order: [[sequelize.literal('totalExpense'), 'DESC']]
+        // });
+        // res.status(201).json( {allExpenseDataFromDB:leaderBoard} ); 
+
+        res.status(201).json( {allExpenseDataFromDB:ldrbrd} ); 
     }
 
     catch(err){

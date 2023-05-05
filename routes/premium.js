@@ -6,7 +6,7 @@ const authenticateUser = require('../authMiddleware/auth');
 
 const router = express.Router();
 
-// router.get('/allexpenses', authenticateUser.authenticate, premiumUser.getAllExpensesFromDB);
+router.get('/allexpenses', authenticateUser.authenticate, premiumUser.getAllExpensesFromDB);
 
 // router.get('/user/download', authenticateUser.authenticate, downloadFile.downloadExpense);
 
