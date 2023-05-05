@@ -6,10 +6,10 @@ const authenticateUser = require('../authMiddleware/auth');
 
 const router = express.Router();
 
-router.get('/allexpenses', authenticateUser.authenticate, premiumUser.getAllExpensesFromDB);
+// router.get('/allexpenses', authenticateUser.authenticate, premiumUser.getAllExpensesFromDB);
 
-router.get('/user/download', authenticateUser.authenticate, downloadFile.downloadExpense);
+// router.get('/user/download', authenticateUser.authenticate, downloadFile.downloadExpense);
 
-router.get('/user/download/all', authenticateUser.authenticate, downloadFile.downloadExpenseAll);
+// router.get('/user/download/all', authenticateUser.authenticate, downloadFile.downloadExpenseAll);
 
 module.exports = router;

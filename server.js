@@ -1,16 +1,18 @@
 const path = require('path');
-const fs = require('fs');
 const express = require('express');
+
+const mongoose = require('mongoose');
+
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const sequelize = require('./util/database');
+// const sequelize = require('./util/database');
 
 //Models
-const Expense = require('./models/expenses');
-const ExpUser = require('./models/user');
-const PremOrder = require('./models/premiumOrders');
-const ForgotPasswordRequest = require('./models/forgotPassword');
-const DownloadedFile = require('./models/downloadedfile');
+// const Expense = require('./models/expenses');
+// const ExpUser = require('./models/user');
+// const PremOrder = require('./models/premiumOrders');
+// const ForgotPasswordRequest = require('./models/forgotPassword');
+// const DownloadedFile = require('./models/downloadedfile');
 
 const app = express();
 
@@ -22,7 +24,7 @@ app.set('views', 'views');
 //Routes
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expenses');
-const purchaseRoutes = require('./routes/purchase');
+// const purchaseRoutes = require('./routes/purchase');
 const premiumRoutes = require('./routes/premium');
 
 //Error controller
@@ -33,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', userRoutes);
 app.use('/expense', expenseRoutes);
-app.use('/purchase', purchaseRoutes);
+// app.use('/purchase', purchaseRoutes);
 app.use('/premium', premiumRoutes);
 
 app.use( (req, res, next) => {
@@ -42,22 +44,29 @@ app.use( (req, res, next) => {
 
 app.use(errorController.get404);
 
-Expense.belongsTo(ExpUser, { constraints: true, onDelete: 'CASCADE' });
-ExpUser.hasMany(Expense);
-PremOrder.belongsTo(ExpUser, { constraints: true, onDelete: 'CASCADE' });
-ExpUser.hasMany(PremOrder);
-ForgotPasswordRequest.belongsTo(ExpUser, { constraints: true, onDelete: 'CASCADE' });
-ExpUser.hasMany(ForgotPasswordRequest);
-DownloadedFile.belongsTo(ExpUser, { constraints: true, onDelete: 'CASCADE' });
-ExpUser.hasMany(DownloadedFile);
-console.log("checking")
+// Expense.belongsTo(ExpUser, { constraints: true, onDelete: 'CASCADE' });
+// ExpUser.hasMany(Expense);
+// PremOrder.belongsTo(ExpUser, { constraints: true, onDelete: 'CASCADE' });
+// ExpUser.hasMany(PremOrder);
+// ForgotPasswordRequest.belongsTo(ExpUser, { constraints: true, onDelete: 'CASCADE' });
+// ExpUser.hasMany(ForgotPasswordRequest);
+// DownloadedFile.belongsTo(ExpUser, { constraints: true, onDelete: 'CASCADE' });
+// ExpUser.hasMany(DownloadedFile);
+// console.log("checking")
 
-sequelize
-  .sync()
-  // .sync({force: true})
-  .then( result => {
-    app.listen(process.env.PORT || 3000);
-  })
-  .catch(err => {
-    console.log(err);
-  });
+// sequelize
+//   .sync()
+//   // .sync({force: true})
+//   .then( result => {
+//     app.listen(process.env.PORT || 3000);
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });
+mongoose
+.connect(process.env.DB_URL)
+.then((result) => {
+    console.log("Connected>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    app.listen(3000)
+})
+.catch( err => {console.log(err)});

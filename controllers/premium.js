@@ -1,5 +1,4 @@
 const ExpTrckUser = require('../models/user');
-const Expenses = require('../models/expenses');
 const sequelize = require('../util/database');
 
 exports.getAllExpensesFromDB = async (req, res, next) => {

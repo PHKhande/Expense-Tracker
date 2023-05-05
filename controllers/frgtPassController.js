@@ -1,6 +1,10 @@
 const Sib = require('sib-api-v3-sdk');
-const ExpUser = require('../models/user');
-const ForgotPasswordRequest = require('../models/forgotPassword');
+// const ExpUser = require('../models/user');
+const User = require('../modelsnosql/user');
+
+// const ForgotPasswordRequest = require('../models/forgotPassword');
+const FPRequest = require('../modelsnosql/forgotpassword');
+
 const sequelize = require('../util/database');
 const bcrypt = require('bcrypt');
 const path = require('path');
@@ -11,19 +15,27 @@ exports.getResetEmailInfo = async (req, res, next) => {
     try{
 
     const {resetEmail} = req.body;
-    const resetUser = await ExpUser.findOne({where: {email:resetEmail}});
+    // const resetUser = await ExpUser.findOne({where: {email:resetEmail}});
+    const resetUser = await User.find( {'email': resetEmail} )
+
     if(!resetUser){
         throw new Error('Not a authorized user');
     }
     const idUser = resetUser.id;
 
-    const forgotRequest = await ForgotPasswordRequest.create({
+    const forgotRequest = new FPRequest({
         isActive: true,
         userId: idUser
-    });
+    })
+    forgotRequest.save();
 
-    const uuid = forgotRequest.id;
-    const changePassURL = `http://3.137.219.239:3000/password/resetpassword/${uuid}`;
+    // const forgotRequest = await ForgotPasswordRequest.create({
+    //     isActive: true,
+    //     userId: idUser
+    // });
+
+    const uuid = forgotRequest._id;
+    const changePassURL = `http://localhost:3000/password/resetpassword/${uuid}`;
 
 
     // require('dotenv').config(); 
@@ -79,11 +91,13 @@ exports.getResetlinkInfo = async (req, res, next) => {
     try{
 
         const idReset = req.params.resetId;
-        const request = await ForgotPasswordRequest.findOne( {where: {id: idReset}} );
+        // const request = await ForgotPasswordRequest.findOne( {where: {id: idReset}} );
+        const request = await FPRequest.find( {'_id': idReset} );
+
         if(!request){
             throw new Error('No such has been made');
         }
-        if(request.isActive == true){
+        if(request[0].isActive == true){
             res.status(201).sendFile(path.join(__dirname, '../', 'public', 'form.html'));
         }
         else{
@@ -98,7 +112,7 @@ exports.getResetlinkInfo = async (req, res, next) => {
 }
 
 exports.postResetPasswordInfo = async (req, res, next) => {
-    const t = await sequelize.transaction();
+    // const t = await sequelize.transaction();
     try{
 
         const {newPassword} = req.body;
@@ -106,14 +120,28 @@ exports.postResetPasswordInfo = async (req, res, next) => {
         
         const encryptPass = await bcrypt.hash(newPassword, 10); 
 
-        const request = await ForgotPasswordRequest.findOne( {where: {id: idReset}} );
+        // const request = await ForgotPasswordRequest.findOne( {where: {id: idReset}} );
+        const request = await FPRequest.find( {'_id': idReset} );
+
         if(!request){
             throw new Error('No link was created');
         }
-        if(request.isActive == true){
-            await ExpUser.update({ password: encryptPass },{where: {id: request.userId}, transaction:t});
-            await request.update({ isActive: false },{transaction:t})
-            await t.commit();
+        if(request[0].isActive == true){
+            const user = await User.findById(idUser);
+            user.password = encryptPass;
+            user.save();
+
+            const oneRequest = request[0]
+            oneRequest.isActive = false
+            oneRequest.save();
+
+
+            // await ExpUser.update({ password: encryptPass },{where: {id: request.userId}, transaction:t});
+            // await request.update({ isActive: false },{transaction:t})
+            // await t.commit();
+            // res.status(201).json({mesaage: "Successfully password changed"});
+
+
             res.status(201).json({mesaage: "Successfully password changed"});
         }
         else{

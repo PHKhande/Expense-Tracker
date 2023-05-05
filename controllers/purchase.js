@@ -1,5 +1,8 @@
 const process = require('process');
 const Razorpay = require('razorpay');
+
+// const Order = require('../models/premiumOrders');
+
 const Order = require('../models/premiumOrders');
 
 exports.getpurchasePremium = async (req, res, next) => {
@@ -15,10 +18,16 @@ exports.getpurchasePremium = async (req, res, next) => {
 
         const order = await rzp.orders.create( {amount, currency: "INR"} );
 
-        await req.user.createOrder({
+        const neworders = new Order({
             orderId: order.id,
-            status : 'PENDING'
-        });
+            status : 'PENDING',
+            userId: req.user
+        })
+        neworders.save();
+        // await req.user.createOrder({
+        //     orderId: order.id,
+        //     status : 'PENDING'
+        // });
 
         res.status(201).json( {order, key_id: rzp.key_id} );
     }
@@ -35,19 +44,31 @@ exports.postTransactionStatus = async( req, res, next) => {
     try{
         const {order_id, payment_id, status} = req.body;
 
-        const singleOrder = await Order.findOne( {where: {orderId: order_id} } );
+        const singleOrder = await Order.find( {orderId: order_id } );
+        const lastOrder = singleOrder[0];
+        lastOrder.status = status;
+        lastOrder.paymentId = payment_id;
+        lastOrder.save();
 
-        await singleOrder.update( {paymentId: payment_id, status: status} );
+        // const singleOrder = await Order.findOne( {where: {orderId: order_id} } );
+
+        // await singleOrder.update( {paymentId: payment_id, status: status} );
 
         if (status === "SUCCESSFUL"){
 
-            await req.user.update({ isPremium: true })
-            res.status(202).json( {singleOrder, message: "Transaction Successful"} );
+            const user = req.user
+            user.isPremium = true
+            user.save();
+
+            // await req.user.update({ isPremium: true })
+            // res.status(202).json( {singleOrder, message: "Transaction Successful"} );
+            res.status(202).json( {lastOrder, message: "Transaction Successful"} );
 
         }
         else{
 
-            res.status(202).json( {singleOrder, message: "Transaction Failed"} );
+            // res.status(202).json( {singleOrder, message: "Transaction Failed"} );
+            res.status(202).json( {lastOrder, message: "Transaction Failed"} );
 
         }
         

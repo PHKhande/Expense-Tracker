@@ -1,4 +1,6 @@
-const ExpTrckUser = require('../models/user');
+// const ExpTrckUser = require('../models/user');
+const User = require('../modelsnosql/user');
+
 const DownFiles = require('../models/downloadedfile');
 
 const S3Services = require('../services/S3Services');
@@ -16,13 +18,23 @@ exports.signUp = async (req, res, next) => {
     
     const encryptPass = await bcrypt.hash(password, 10); 
     
-    await ExpTrckUser.create({
+    const user = new User({
       name: name,
       email: email,
       password: encryptPass,
       isPremium: false,
       totalExpense: 0
-    });
+    })
+
+    user.save();
+    
+    // await ExpTrckUser.create({
+    //   name: name,
+    //   email: email,
+    //   password: encryptPass,
+    //   isPremium: false,
+    //   totalExpense: 0
+    // });
 
     res.status(201).json({message: 'Successfully created new user'});   
   }
@@ -42,19 +54,22 @@ exports.login = async (req, res, next) => {
   }
 
   try {
-    const availableUser = await ExpTrckUser.findOne({ where: { email: loginEmail } });
+
+    const availableUser = await User.find( { 'email': loginEmail })
+  
+    // const availableUser = await ExpTrckUser.findOne({ where: { email: loginEmail } });
 
     if (!availableUser) {
       throw new Error('User not found');
     }
 
-    const isPasswordMatch = await bcrypt.compare(loginPassword, availableUser.password);
+    const isPasswordMatch = await bcrypt.compare(loginPassword, availableUser[0].password);
 
     if (!isPasswordMatch) {
       return res.status(401).json({ message: 'User not authorized', success: false });
     }
 
-    res.status(201).json({ message: 'User logged in successfully', success: true, token: generateAccessToken(availableUser.id) });
+    res.status(201).json({ message: 'User logged in successfully', success: true, token: generateAccessToken(availableUser[0].id) });
     
   } 
   
@@ -70,16 +85,14 @@ function generateAccessToken(id){
   return jwt.sign(id, 'amareshwar');
 }
 
-
-
 exports.getUserInfo = async (req, res, next) => {
 
   try{
-    const idUser = req.user.id;
+    const idUser = req.user._id;
 
-    const ourUser = await ExpTrckUser.findByPk(idUser);
-
-    res.status(201).json( {isPremiumMember: ourUser.isPremium}); 
+    // const ourUser = await ExpTrckUser.findByPk(idUser);
+    const ourUser = await User.find({'_id': idUser});
+    res.status(201).json( {isPremiumMember: ourUser[0].isPremium}); 
   } 
 
   catch(err){
@@ -88,7 +101,6 @@ exports.getUserInfo = async (req, res, next) => {
   }
 
 }
-
 
 exports.downloadExpense = async (req, res, next) => {
 
