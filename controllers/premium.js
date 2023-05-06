@@ -7,9 +7,8 @@ exports.getAllExpensesFromDB = async (req, res, next) => {
 
     try{
 
-        const ldrbrd = await User.find().select('name totalExpense').sort({totalExpense: -1}).exec();
-        console.log(ldrbrd);
-
+        const ldrbrd = await User.find().select('name totalExpense').sort({totalExpense: -1});
+        
         // const leaderBoard = await ExpTrckUser.findAll( {
         //     attributes: [
         //         'name',

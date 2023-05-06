@@ -27,7 +27,7 @@ exports.getResetEmailInfo = async (req, res, next) => {
         isActive: true,
         userId: idUser
     })
-    forgotRequest.save();
+    await forgotRequest.save();
 
     // const forgotRequest = await ForgotPasswordRequest.create({
     //     isActive: true,
@@ -130,11 +130,11 @@ exports.postResetPasswordInfo = async (req, res, next) => {
             // console.log(request);
             const user = await User.findById(request[0].userId);
             user.password = encryptPass;
-            user.save();
+            await user.save();
 
             const oneRequest = request[0]
             oneRequest.isActive = false
-            oneRequest.save();
+            await oneRequest.save();
 
 
             // await ExpUser.update({ password: encryptPass },{where: {id: request.userId}, transaction:t});

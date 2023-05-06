@@ -9,7 +9,9 @@ const userSchema = new Schema({
     },
     email : {
         type: String,
-        required: true
+        required: true,
+        lowercase: true,
+        minLength: 5
     },
     password: {
         type: String,
@@ -22,6 +24,12 @@ const userSchema = new Schema({
 
     totalExpense: {
         type: Number
+    },
+
+    createdAt: {
+        type: Date,
+        default: () => Date.now(),
+        immutable: true
     }
 
 });

@@ -1,7 +1,9 @@
 // const ExpTrckUser = require('../models/user');
 const User = require('../modelsnosql/user');
+const Exps = require('../modelsnosql/expenses');
+const DownFs = require('../modelsnosql/downloadfiles');
 
-const DownFiles = require('../models/downloadedfile');
+// const DownFiles = require('../models/downloadedfile');
 
 const S3Services = require('../services/S3Services');
 const bcrypt = require('bcrypt');
@@ -26,7 +28,7 @@ exports.signUp = async (req, res, next) => {
       totalExpense: 0
     })
 
-    user.save();
+    await user.save();
     
     // await ExpTrckUser.create({
     //   name: name,
@@ -106,15 +108,25 @@ exports.downloadExpense = async (req, res, next) => {
 
   try{
     
-    const expenses = await req.user.getExpenses();
-    const stringifiedExpense = JSON.stringify(expenses);
     const userID = req.user.id;
+    // const expenses = await req.user.getExpenses();
+
+    const expenses = await Exps.find().where({userId: userID});
+
+    const stringifiedExpense = JSON.stringify(expenses);
+    
     const fileName = `Expense${userID}/${new Date()}.txt`;
     const fileURL = await S3Services.uploadtoS3(stringifiedExpense, fileName);
-    await DownFiles.create( {
+
+    const DFiles = new DownFs({
       fileurl: fileURL,
       userId : userID
     })
+    await DFiles.save();
+    // await DownFiles.create( {
+    //   fileurl: fileURL,
+    //   userId : userID
+    // })
     res.status(200).json({fileURL:fileURL}); 
   }
 
@@ -128,7 +140,10 @@ exports.downloadExpense = async (req, res, next) => {
 exports.downloadExpenseAll = async( req, res, next) => {
   
   try {
-    const AllURLs = await req.user.getDownloadedfiles();
+    // const AllURLs = await req.user.getDownloadedfiles();
+
+    const AllURLs = await DFiles.find().where({userId: req.user.id});
+    
     res.status(200).json({AllURLs:AllURLs}); 
 
   } catch(err) {

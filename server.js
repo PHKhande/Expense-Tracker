@@ -24,7 +24,7 @@ app.set('views', 'views');
 //Routes
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expenses');
-// const purchaseRoutes = require('./routes/purchase');
+const purchaseRoutes = require('./routes/purchase');
 const premiumRoutes = require('./routes/premium');
 
 //Error controller
@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', userRoutes);
 app.use('/expense', expenseRoutes);
-// app.use('/purchase', purchaseRoutes);
+app.use('/purchase', purchaseRoutes);
 app.use('/premium', premiumRoutes);
 
 app.use( (req, res, next) => {
@@ -66,7 +66,7 @@ app.use(errorController.get404);
 mongoose
 .connect(process.env.DB_URL)
 .then((result) => {
-    console.log("Connected>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    console.log("Connected>>>>>>");
     app.listen(3000)
 })
-.catch( err => {console.log(err)});
+.catch( err => {console.log(err)}); 

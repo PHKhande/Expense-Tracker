@@ -3,7 +3,7 @@ const Razorpay = require('razorpay');
 
 // const Order = require('../models/premiumOrders');
 
-const Order = require('../models/premiumOrders');
+const Order = require('../modelsnosql/order');
 
 exports.getpurchasePremium = async (req, res, next) => {
 
@@ -23,7 +23,7 @@ exports.getpurchasePremium = async (req, res, next) => {
             status : 'PENDING',
             userId: req.user
         })
-        neworders.save();
+        await neworders.save();
         // await req.user.createOrder({
         //     orderId: order.id,
         //     status : 'PENDING'
@@ -48,7 +48,7 @@ exports.postTransactionStatus = async( req, res, next) => {
         const lastOrder = singleOrder[0];
         lastOrder.status = status;
         lastOrder.paymentId = payment_id;
-        lastOrder.save();
+        await lastOrder.save();
 
         // const singleOrder = await Order.findOne( {where: {orderId: order_id} } );
 
@@ -58,7 +58,7 @@ exports.postTransactionStatus = async( req, res, next) => {
 
             const user = req.user
             user.isPremium = true
-            user.save();
+            await user.save();
 
             // await req.user.update({ isPremium: true })
             // res.status(202).json( {singleOrder, message: "Transaction Successful"} );
