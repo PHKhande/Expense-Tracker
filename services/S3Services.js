@@ -4,7 +4,7 @@ exports.uploadtoS3 = async (data, fileName) => {
 
     // require('dotenv').config(); 
   
-    const BUCKET_NAME = 'expensetrackerfiles';
+    const BUCKET_NAME = 'sharpexpensetracker';
     const IAM_USER_KEY = process.env.IAM_USER_KEY;
     const IAM_USER_SECRET_KEY = process.env.IAM_USER_SECRET_KEY;
   

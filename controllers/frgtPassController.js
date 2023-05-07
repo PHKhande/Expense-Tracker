@@ -8,6 +8,7 @@ const FPRequest = require('../modelsnosql/forgotpassword');
 const sequelize = require('../util/database');
 const bcrypt = require('bcrypt');
 const path = require('path');
+const { default: mongoose } = require('mongoose');
 
 
 exports.getResetEmailInfo = async (req, res, next) => {
@@ -112,47 +113,72 @@ exports.getResetlinkInfo = async (req, res, next) => {
 }
 
 exports.postResetPasswordInfo = async (req, res, next) => {
-    // const t = await sequelize.transaction();
+
+    const session = await mongoose.startSession();
+
     try{
 
         const {newPassword} = req.body;
-        const idReset = req.params.resetId;
-        
-        const encryptPass = await bcrypt.hash(newPassword, 10); 
+        const resetId = req.params.resetId;
 
-        // const request = await ForgotPasswordRequest.findOne( {where: {id: idReset}} );
-        const request = await FPRequest.find( {'_id': idReset} );
+        const encryptPass = await bcrypt.hash(newPassword, 10);
+        const request = await FPRequest.findById(resetId).session(session);
 
         if(!request){
             throw new Error('No link was created');
         }
-        if(request[0].isActive == 'true'){
-            // console.log(request);
-            const user = await User.findById(request[0].userId);
+
+        if(request.isActive == 'true'){
+
+            const user = await User.findById(request.userId).session(session);
             user.password = encryptPass;
             await user.save();
 
-            const oneRequest = request[0]
-            oneRequest.isActive = false
-            await oneRequest.save();
-
-
-            // await ExpUser.update({ password: encryptPass },{where: {id: request.userId}, transaction:t});
-            // await request.update({ isActive: false },{transaction:t})
-            // await t.commit();
-            // res.status(201).json({mesaage: "Successfully password changed"});
-
+            request.isActive = false
+            await request.save();
 
             res.status(201).json({mesaage: "Successfully password changed"});
         }
-        else{
-            throw new Error('Link has expired or password changed');
-        }
-    }
-    catch(err){
+
+    } catch(err){
+
         console.log(err);
-        // await t.rollback();
-        res.status(404).json({message: err});
+        res.status(500).json({ error: err });
+
+    } finally{
+
+        session.endSession();
     }
+
+    // const t = await sequelize.transaction();
+    // try{
+
+    //     const {newPassword} = req.body;
+    //     const resetId = req.params.resetId;
+        
+    //     const encryptPass = await bcrypt.hash(newPassword, 10); 
+
+    //     const request = await ForgotPasswordRequest.findOne( {where: {id: resetId}} );
+
+    //     if(!request){
+    //         throw new Error('No link was created');
+    //     }
+    //     if(request.isActive == true){
+
+    //         // await ExpUser.update({ password: encryptPass },{where: {id: request.userId}, transaction:t});
+    //         // await request.update({ isActive: false },{transaction:t})
+    //         // await t.commit();
+    //         // res.status(201).json({mesaage: "Successfully password changed"});
+
+    //     }
+    //     else{
+    //         throw new Error('Link has expired or password changed');
+    //     }
+    // }
+    // catch(err){
+    //     console.log(err);
+    //     await t.rollback();
+    //     res.status(404).json({message: err});
+    // }
     
 }

@@ -104,6 +104,7 @@ function expenseDetails(obj){
     parentElem.appendChild(newli);
     delBtn.onclick = async() => {
         try{
+            console.log('aaaaaaaaa', obj)
             await axios.delete(`http://localhost:3000/expense/${obj._id}`, { headers: {"Authorization" : token} });
             parentElem.removeChild(newli);
         }

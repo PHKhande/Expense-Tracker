@@ -8,7 +8,6 @@ exports.authenticate = (req, res, next) => {
         // console.log(req.headers.authorization)
         const token = req.headers.authorization;
         const userId = jwt.verify(token, 'amareshwar');
-        console.log(userId)
         User.find( {'_id': userId} )
         // ExpUser.findByPk(userId)
             .then( user => {
